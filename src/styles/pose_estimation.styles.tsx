@@ -33,7 +33,7 @@ export const PageWrapper = Styled.div`
     justify-items: center;
     align-items: center;
     background-color: #FFD733;
-    width:100%;
+    width:400px;
     height:800px;
 
 
