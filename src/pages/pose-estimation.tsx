@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef, useState, Fragment } from "react"
 // Netpose tensor flow dependencies
 import * as tf from "@tensorflow/tfjs"
 import * as posenet from "@tensorflow-models/posenet"
@@ -19,7 +19,7 @@ const PoseEstimation = observer(() => {
       typeof window !== "undefined" &&
       typeof window.navigator !== "undefined" 
     ) {
-      runPosenet()
+       runPosenet()
     }
   }, [])
   // refs for both the webcam and canvas components
@@ -101,57 +101,58 @@ const PoseEstimation = observer(() => {
   drawTarget()
 
   return (
-    <WelcomePages>
-      <S.PageWrapper ref={ref}>
-        {typeof window !== "undefined" &&
-        typeof window.navigator !== "undefined" &&
-        typeof width !== "undefined" &&
-        typeof height !== "undefined" ? (
-          <S.CustomCamera
-            capture={capture}
-            ref={camRef}
-            front={false}
-            width={width}
-            height={height}
-          />
-        ) : null}
-        {typeof window !== "undefined" &&
-        typeof window.navigator !== "undefined" &&
-        typeof width !== "undefined" &&
-        typeof height !== "undefined" ? (
-            <canvas
-              id="keypoints"
-              ref={canvasRef}
-              style={{
-                position: "absolute",
-                left: 0,
-                top: 0,
-                marginLeft: "auto",
-                marginRight: "auto",
-                textAlign: "center",
-                zIndex: 99,
-              }}
+  
+      <WelcomePages>
+        <S.PageWrapper ref={ref}>
+          {typeof window !== "undefined" &&
+          typeof window.navigator !== "undefined" &&
+          typeof width !== "undefined" &&
+          typeof height !== "undefined" ? (
+            <S.CustomCamera
+              capture={capture}
+              ref={camRef}
+              front={false}
               width={width}
               height={height}
-            ></canvas>
-        ) : null}
-        <canvas
-          id="targets"
-          ref={targetsRef}
-          style={{
-            position: "absolute",
-            left: 0,
-            top: 0,
-            marginLeft: "auto",
-            marginRight: "auto",
-            textAlign: "center",
-            zIndex: 18,
-          }}
-          width="100%"
-          height="800px"
-        ></canvas>
-      </S.PageWrapper>
-    </WelcomePages>
+            />
+          ) : null}
+          {typeof window !== "undefined" &&
+          typeof window.navigator !== "undefined" &&
+          typeof width !== "undefined" &&
+          typeof height !== "undefined" ? (
+              <canvas
+                id="keypoints"
+                ref={canvasRef}
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  top: 0,
+                  marginLeft: "auto",
+                  marginRight: "auto",
+                  textAlign: "center",
+                  zIndex: 99,
+                }}
+                width={width}
+                height={height}
+              ></canvas>
+          ) : null}
+          <canvas
+            id="targets"
+            ref={targetsRef}
+            style={{
+              position: "absolute",
+              left: 0,
+              top: 0,
+              marginLeft: "auto",
+              marginRight: "auto",
+              textAlign: "center",
+              zIndex: 18,
+            }}
+            width={width}
+            height={height}
+          ></canvas>
+        </S.PageWrapper>
+      </WelcomePages>
   )
 })
 

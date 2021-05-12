@@ -17,12 +17,6 @@ export const CustomCamera = Styled(Camera)<CameraProps>`
 
 `
 
-interface CanvasProps {
-  x: string
-  y: string
-  width: string
-  height: string
-}
 
 export const PageWrapper = Styled.div`
 
@@ -32,7 +26,7 @@ export const PageWrapper = Styled.div`
     align-items: center;
     background-color: #FFD733;
     width:100%;
-    height:auto;
+    height:900px;
 
 
 
