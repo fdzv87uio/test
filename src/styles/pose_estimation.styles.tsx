@@ -16,9 +16,6 @@ export const CustomCamera = Styled(Camera)<CameraProps>`
     width:${props => props.width};
     height:${props => props.height};
 
-    .camera-focus{
-        border: none;
-    }
 
 `
 
@@ -39,15 +36,6 @@ export const PageWrapper = Styled.div`
     width:100%;
     height:800px;
 
-    .camera-focus{
-        border: none;
-    }
 
 
-`
-
-export const CameraFeed = Styled.img`
-
-    width: 600px;
-    height: 600px;
 `

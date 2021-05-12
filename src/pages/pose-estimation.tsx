@@ -23,6 +23,17 @@ export class DeviceOrientationInfo {
 }
 
 const PoseEstimation = observer(() => {
+ //to be run on load
+  useEffect(() => {
+    if (
+      typeof window !== "undefined" &&
+      typeof window.navigator !== "undefined" &&
+      canvasRef !== null
+    ) {
+      runPosenet()
+      grantPermissionForDeviceOrientation()
+    }
+  }, [])
   // refs for both the webcam and canvas components
   const camRef = useRef(null)
   const canvasRef = useRef(null)
@@ -64,15 +75,7 @@ const PoseEstimation = observer(() => {
     })
   }
 
-  useEffect(() => {
-    if (
-      typeof window !== "undefined" &&
-      typeof window.navigator !== "undefined" &&
-      canvasRef !== null
-    ) {
-      runPosenet()
-    }
-  }, [])
+
   // //load rotation coordinates
 
   // // // load and run posenet function
@@ -105,12 +108,13 @@ const PoseEstimation = observer(() => {
       // Make detections
       const pose = await net.estimateSinglePose(video)
       drawCanvas(pose, video, videoWidth, videoHeight, canvasRef)
+      console.log(pose)
       //detect if the current pose is aligned with the target area to fire screen capture
 
       const rightWrist = pose.keypoints[10]
       const x = rightWrist.position.x
       const y = rightWrist.position.y
-      if (x >= 400 && x <= 500 && y >= 400 && y <= 500) {
+      if (x >= 100 && x <= 160 && y >= 100 && y <= 160) {
         camRef.current.capture()
       }
     }
@@ -132,7 +136,7 @@ const PoseEstimation = observer(() => {
       const ctx = targetsRef.current.getContext("2d")
       targetsRef.current.width = width
       targetsRef.current.height = height
-      drawPoint(ctx, 400, 400, 60, "green")
+      drawPoint(ctx, 100, 100, 60, "green")
     }
   }
 
@@ -141,7 +145,7 @@ const PoseEstimation = observer(() => {
     console.log(imgSrc)
   }
 
-  const [ref, { x, y, width, height, dpr }] = useDimensions()
+  const [ref, { x, y, width, height }] = useDimensions()
 
   drawTarget()
 
@@ -153,10 +157,9 @@ const PoseEstimation = observer(() => {
         typeof width !== "undefined" &&
         typeof height !== "undefined" ? (
           <S.CustomCamera
-            showFocus={true}
-            front={false}
             capture={capture}
             ref={camRef}
+            front={true}
             x={x}
             y={y}
             width={width}
@@ -166,8 +169,7 @@ const PoseEstimation = observer(() => {
         {typeof window !== "undefined" &&
         typeof window.navigator !== "undefined" &&
         typeof width !== "undefined" &&
-        typeof height !== "undefined" 
-        ? (
+        typeof height !== "undefined" ? (
           <>
             <canvas
               id="keypoints"
@@ -184,23 +186,23 @@ const PoseEstimation = observer(() => {
               width={width}
               height={height}
             ></canvas>
-            <canvas
-              id="targets"
-              ref={targetsRef}
-              style={{
-                position: "absolute",
-                left: 0,
-                top: 0,
-                marginLeft: "auto",
-                marginRight: "auto",
-                textAlign: "center",
-                zIndex: 18,
-              }}
-              width={width}
-              height={height}
-            ></canvas>
           </>
         ) : null}
+        <canvas
+          id="targets"
+          ref={targetsRef}
+          style={{
+            position: "absolute",
+            left: 0,
+            top: 0,
+            marginLeft: "auto",
+            marginRight: "auto",
+            textAlign: "center",
+            zIndex: 18,
+          }}
+          width={width}
+          height={height}
+        ></canvas>
 
         {width === undefined || (height === undefined && permissionGranted) ? (
           <div>{"🤔"}</div>
@@ -212,10 +214,6 @@ const PoseEstimation = observer(() => {
             ></OrientationAxis>
           </Canvas>
         )}
-
-        <Button onClick={grantPermissionForDeviceOrientation}>
-          Authorize Orientation
-        </Button>
       </S.PageWrapper>
     </WelcomePages>
   )
