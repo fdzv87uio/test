@@ -11,70 +11,21 @@ import { observer } from "mobx-react"
 import { drawKeypoints, drawPoint } from "../utils/tensorflow-utils"
 import useDimensions from "react-use-dimensions"
 import UserStore from "../stores/UserStore"
-import { Canvas } from "../components/Canvas/Canvas.component"
-import { OrientationAxis } from "../components/OrientationAxis/OrientationAxis.component"
-import { Button } from "@material-ui/core"
-
-export class DeviceOrientationInfo {
-  absolute: boolean = false
-  alpha: number | null = null
-  beta: number | null = null
-  gamma: number | null = null
-}
 
 const PoseEstimation = observer(() => {
- //to be run on load
+  //to be run on load
   useEffect(() => {
     if (
       typeof window !== "undefined" &&
-      typeof window.navigator !== "undefined" &&
-      canvasRef !== null
+      typeof window.navigator !== "undefined" 
     ) {
       runPosenet()
-      grantPermissionForDeviceOrientation()
     }
   }, [])
   // refs for both the webcam and canvas components
   const camRef = useRef(null)
   const canvasRef = useRef(null)
   const targetsRef = useRef(null)
-
-  //New Hooks
-  const [permissionGranted, setPermissionGranted] = useState<boolean>(false)
-  const [
-    deviceOrientation,
-    setDeviceOrientation,
-  ] = useState<DeviceOrientationInfo>()
-  // Device Position Methods
-  function grantPermissionForDeviceOrientation() {
-    if (typeof DeviceOrientationEvent.requestPermission === "function") {
-      DeviceOrientationEvent.requestPermission()
-        .then(permissionState => {
-          if (permissionState === "granted") {
-            setPermissionGranted(true)
-            window.addEventListener(
-              "deviceorientation",
-              handleDeviceOrientationEvent
-            )
-          }
-        })
-        .catch(console.error)
-    } else {
-      // handle regular non iOS 13+ devices
-      setPermissionGranted(true)
-      window.addEventListener("deviceorientation", handleDeviceOrientationEvent)
-    }
-  }
-
-  function handleDeviceOrientationEvent(ev: DeviceOrientationEvent) {
-    setDeviceOrientation({
-      absolute: ev.absolute,
-      alpha: ev.alpha,
-      beta: ev.beta,
-      gamma: ev.gamma,
-    })
-  }
-
 
   // //load rotation coordinates
 
@@ -159,9 +110,7 @@ const PoseEstimation = observer(() => {
           <S.CustomCamera
             capture={capture}
             ref={camRef}
-            front={true}
-            x={x}
-            y={y}
+            front={false}
             width={width}
             height={height}
           />
@@ -170,7 +119,6 @@ const PoseEstimation = observer(() => {
         typeof window.navigator !== "undefined" &&
         typeof width !== "undefined" &&
         typeof height !== "undefined" ? (
-          <>
             <canvas
               id="keypoints"
               ref={canvasRef}
@@ -186,7 +134,6 @@ const PoseEstimation = observer(() => {
               width={width}
               height={height}
             ></canvas>
-          </>
         ) : null}
         <canvas
           id="targets"
@@ -200,20 +147,9 @@ const PoseEstimation = observer(() => {
             textAlign: "center",
             zIndex: 18,
           }}
-          width={width}
-          height={height}
+          width="100%"
+          height="800px"
         ></canvas>
-
-        {width === undefined || (height === undefined && permissionGranted) ? (
-          <div>{"🤔"}</div>
-        ) : (
-          <Canvas width={width} height={height} dpr={1} isAnimating={true}>
-            <OrientationAxis
-              beta={deviceOrientation?.beta}
-              gamma={deviceOrientation?.gamma}
-            ></OrientationAxis>
-          </Canvas>
-        )}
       </S.PageWrapper>
     </WelcomePages>
   )

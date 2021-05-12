@@ -2,8 +2,6 @@ import Styled from "styled-components"
 import { Camera } from "react-cam"
 
 interface CameraProps {
-  x: string
-  y: string
   width: string
   height: string
 }
@@ -11,8 +9,8 @@ interface CameraProps {
 export const CustomCamera = Styled(Camera)<CameraProps>`
 
     position: absolute;
-    left: ${props => props.x};
-    top: ${props => props.y};
+    left: 0;
+    top: 0;
     width:${props => props.width};
     height:${props => props.height};
 
@@ -33,8 +31,8 @@ export const PageWrapper = Styled.div`
     justify-items: center;
     align-items: center;
     background-color: #FFD733;
-    width:400px;
-    height:800px;
+    width:100%;
+    height:1500px;
 
 
 
